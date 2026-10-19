@@ -48,6 +48,7 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
     var seleccionados by remember { mutableStateOf(setOf<String>()) }
     var maxIntentos by remember { mutableIntStateOf(2) }
     var mensaje by remember { mutableStateOf<String?>(null) }
+    var huboError by remember { mutableStateOf(false) }
 
     Scaffold(topBar = { BarraSuperior("Planificación docente", navController) }) { padding ->
         Column(
@@ -92,7 +93,16 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
                 OutlinedButton(onClick = { if (maxIntentos < 10) maxIntentos++ }) { Text("+") }
             }
 
-            mensaje?.let { Text(it, color = MaterialTheme.colorScheme.secondary) }
+            mensaje?.let { texto ->
+                Text(
+                    text = texto,
+                    color = if (huboError) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
+                )
+            }
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
