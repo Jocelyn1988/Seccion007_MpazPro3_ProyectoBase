@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.mpazpro3.app.ui.components.BarraSuperior
 import com.mpazpro3.app.viewmodel.MpazProViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel as obtenerViewModel
+import com.mpazpro3.app.viewmodel.Rf05ViewModel
+import com.mpazpro3.app.viewmodel.Rf05Estado
 
 /**
  * Módulo "Planificación docente": el docente selecciona los objetivos/contenidos disponibles
@@ -41,6 +44,8 @@ import com.mpazpro3.app.viewmodel.MpazProViewModel
  */
 @Composable
 fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: MpazProViewModel) {
+    val rf05ViewModel: Rf05ViewModel = obtenerViewModel()
+    val estadoRf05 by rf05ViewModel.estado.collectAsState()
     val usuario by viewModel.usuarioActivo.collectAsState()
     val todos by viewModel.contenidos.collectAsState()
     val disponibles = remember(todos) { viewModel.contenidosDisponiblesParaAsignar() }
@@ -48,6 +53,7 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
     var seleccionados by remember { mutableStateOf(setOf<String>()) }
     var maxIntentos by remember { mutableIntStateOf(2) }
     var mensaje by remember { mutableStateOf<String?>(null) }
+    var huboError by remember { mutableStateOf(false) }
 
     Scaffold(topBar = { BarraSuperior("Planificación docente", navController) }) { padding ->
         Column(
@@ -92,7 +98,16 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
                 OutlinedButton(onClick = { if (maxIntentos < 10) maxIntentos++ }) { Text("+") }
             }
 
-            mensaje?.let { Text(it, color = MaterialTheme.colorScheme.secondary) }
+            mensaje?.let { texto ->
+                Text(
+                    text = texto,
+                    color = if (huboError) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    }
+                )
+            }
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
