@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.mpazpro3.app.ui.components.BarraSuperior
 import com.mpazpro3.app.viewmodel.MpazProViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel as obtenerViewModel
+import com.mpazpro3.app.viewmodel.Rf05ViewModel
+import com.mpazpro3.app.viewmodel.Rf05Estado
 
 /**
  * Módulo "Planificación docente": el docente selecciona los objetivos/contenidos disponibles
@@ -41,6 +44,8 @@ import com.mpazpro3.app.viewmodel.MpazProViewModel
  */
 @Composable
 fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: MpazProViewModel) {
+    val rf05ViewModel: Rf05ViewModel = obtenerViewModel()
+    val estadoRf05 by rf05ViewModel.estado.collectAsState()
     val usuario by viewModel.usuarioActivo.collectAsState()
     val todos by viewModel.contenidos.collectAsState()
     val disponibles = remember(todos) { viewModel.contenidosDisponiblesParaAsignar() }
