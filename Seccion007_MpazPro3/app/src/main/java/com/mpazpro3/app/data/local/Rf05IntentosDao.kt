@@ -1,4 +1,4 @@
-ackage com.mpazpro3.app.data.local
+package com.mpazpro3.app.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
