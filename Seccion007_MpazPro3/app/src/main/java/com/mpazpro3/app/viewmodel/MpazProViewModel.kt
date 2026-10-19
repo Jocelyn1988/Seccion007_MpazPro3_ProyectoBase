@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.UUID
+
 /**
  * ViewModel único, compartido por todas las pantallas (se crea una sola vez en AppNavigation).
  *
