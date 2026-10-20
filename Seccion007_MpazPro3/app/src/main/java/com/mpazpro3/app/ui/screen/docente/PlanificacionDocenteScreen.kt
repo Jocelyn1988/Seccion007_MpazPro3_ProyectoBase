@@ -31,6 +31,11 @@ import com.mpazpro3.app.viewmodel.MpazProViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel as obtenerViewModel
 import com.mpazpro3.app.viewmodel.Rf05ViewModel
 import com.mpazpro3.app.viewmodel.Rf05Estado
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 
 /**
  * Módulo "Planificación docente": el docente selecciona los objetivos/contenidos disponibles
@@ -108,6 +113,22 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
                     }
                 )
             }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = seleccionados.isNotEmpty() &&
+                        !usuario?.curso.isNullOrBlank() &&
+                        estadoRf05 != Rf05Estado.Guardando,
+                onClick = {
+                    rf05ViewModel.guardarMaximo(
+                        curso = usuario?.curso.orEmpty(),
+                        contenidoIds = seleccionados.toList(),
+                        maxIntentos = maxIntentos
+                    )
+                }
+            ) {
+                Text("Guardar máximo de intentos")
+            }
+            
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
