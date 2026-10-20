@@ -56,7 +56,7 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
     val disponibles = remember(todos) { viewModel.contenidosDisponiblesParaAsignar() }
 
     var seleccionados by remember { mutableStateOf(setOf<String>()) }
-    var maxIntentos by remember { mutableIntStateOf(2) }
+    var maxIntentos by remember { mutableIntStateOf(0) }
     var mensaje by remember { mutableStateOf<String?>(null) }
     var huboError by remember { mutableStateOf(false) }
 
@@ -98,9 +98,17 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
 
             Text("2. Máximo de intentos de la evaluación final", style = MaterialTheme.typography.titleSmall)
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                OutlinedButton(onClick = { if (maxIntentos > 1) maxIntentos-- }) { Text("−") }
+                OutlinedButton(onClick = { if (maxIntentos > 0) maxIntentos-- }, enabled = maxIntentos > 0 ) { Text("−") }
                 Text("$maxIntentos", style = MaterialTheme.typography.headlineSmall)
-                OutlinedButton(onClick = { if (maxIntentos < 10) maxIntentos++ }) { Text("+") }
+                OutlinedButton(onClick = { if (maxIntentos < 10) maxIntentos++ }, enabled = maxIntentos < 10) { Text("+") }
+            }
+
+            if (maxIntentos == 0) {
+                Text(
+                    text = "Debes definir al menos 1 intento para guardar.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
 
             mensaje?.let { texto ->
@@ -117,6 +125,7 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
                 modifier = Modifier.fillMaxWidth(),
                 enabled = seleccionados.isNotEmpty() &&
                         !usuario?.curso.isNullOrBlank() &&
+                        maxIntentos > 0 &&
                         estadoRf05 != Rf05Estado.Guardando,
                 onClick = {
                     rf05ViewModel.guardarMaximo(
@@ -158,7 +167,7 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = seleccionados.isNotEmpty(),
+                enabled = seleccionados.isNotEmpty() && maxIntentos > 0,
                 onClick = {
                     viewModel.asignarAlCurso(usuario?.curso.orEmpty(), seleccionados.toList(), maxIntentos)
                     mensaje = "Asignación enviada (se verá en el panel cuando asignarAlCurso() esté implementada)."
