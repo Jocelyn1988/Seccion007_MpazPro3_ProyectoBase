@@ -128,7 +128,33 @@ fun PlanificacionDocenteScreen(navController: NavHostController, viewModel: Mpaz
             ) {
                 Text("Guardar máximo de intentos")
             }
-            
+
+
+            AnimatedVisibility(
+                visible = estadoRf05 is Rf05Estado.Exito ||
+                        estadoRf05 is Rf05Estado.Error,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                when (val resultado = estadoRf05) {
+                    is Rf05Estado.Exito -> {
+                        Text(
+                            text = resultado.mensaje,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    is Rf05Estado.Error -> {
+                        Text(
+                            text = resultado.mensaje,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+
+                    else -> Unit
+                }
+            }
+
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
